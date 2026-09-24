@@ -48,7 +48,7 @@ namespace WeaponShopConsole
 
         private static void ShowAllWeapons()
         {
-            Console.WriteLine("\n--- ТЕКУЩИЙ АССОРТИМЕНТ ОРУЖИЯ ---");
+            Console.WriteLine("\nТЕКУЩИЙ АССОРТИМЕНТ ОРУЖИЯ");
             var list = _armory.GetAll();
             if (list.Count == 0) Console.WriteLine("Склад пуст! Все раскупили.");
 
@@ -110,10 +110,13 @@ namespace WeaponShopConsole
 
             _armory.Create(w);
             Console.WriteLine("Оружие успешно выковано и добавлено в лавку!");
+            ShowAllWeapons();
+
         }
 
         private static void ReforgeWeapon()
         {
+            ShowAllWeapons();
             Console.Write("\nВведите ID оружия для перековки: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
@@ -149,6 +152,7 @@ namespace WeaponShopConsole
 
         private static void ScrapWeapon()
         {
+            ShowAllWeapons();
             Console.Write("\nВведите ID оружия для переплавки в лом: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
