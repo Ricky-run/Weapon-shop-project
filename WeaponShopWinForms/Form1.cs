@@ -7,55 +7,17 @@ namespace WeaponShopWinForms
     public partial class Form1 : Form
     {
         private Logic _armory = new Logic();
-        private DataGridView grid;
 
         public Form1()
         {
             InitializeComponent();
-            InitializeManualUI();
+        }
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+            this.Text = "Оружейная лавка 'Вялый Меч'";
             RefreshGrid();
         }
-
-        private void InitializeManualUI()
-        {
-            this.Text = "Оружейная лавка 'Стальной Клык' (WinForms)";
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            // Таблица арсенала
-            grid = new DataGridView
-            {
-                Top = 20,
-                Left = 20,
-                Width = 710,
-                Height = 430,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                MultiSelect = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
-
-            // Кнопки CRUD
-            var btnAdd = new Button { Text = "⚔️ Выковать (Создать)", Top = 20, Left = 750, Width = 160, Height = 35 };
-            btnAdd.Click += (s, e) => AddWeapon();
-
-            var btnEdit = new Button { Text = "🔨 Перековать (Изменить)", Top = 65, Left = 750, Width = 160, Height = 35 };
-            btnEdit.Click += (s, e) => EditWeapon();
-
-            var btnDelete = new Button { Text = "🗑️ В утиль (Удалить)", Top = 110, Left = 750, Width = 160, Height = 35 };
-            btnDelete.Click += (s, e) => DeleteWeapon();
-
-            var btnReset = new Button { Text = "Сброс / Весь склад", Top = 155, Left = 750, Width = 160, Height = 35 };
-            btnReset.Click += (s, e) => RefreshGrid();
-
-            // Кнопки бизнес-функций
-            var btnEquip = new Button { Text = "🛡️ Подобрать экипировку", Top = 230, Left = 750, Width = 160, Height = 45 };
-            btnEquip.Click += BtnEquip_Click;
-
-            var btnStats = new Button { Text = "📊 Анализ категорий", Top = 290, Left = 750, Width = 160, Height = 45 };
-            btnStats.Click += BtnStats_Click;
-
-            this.Controls.AddRange(new Control[] { grid, btnAdd, btnEdit, btnDelete, btnReset, btnEquip, btnStats });
-        }
+     
 
         private void RefreshGrid()
         {
@@ -63,7 +25,9 @@ namespace WeaponShopWinForms
             grid.DataSource = _armory.GetAll();
         }
 
-        private void AddWeapon()
+     
+
+        private void btnAdd_Click_2(object sender, EventArgs e)
         {
             using (var form = new WeaponEditForm())
             {
@@ -71,63 +35,92 @@ namespace WeaponShopWinForms
                 {
                     _armory.Create(form.WeaponData);
                     RefreshGrid();
+                    MessageBox.Show("Оружие успешно выковано и добавлено в лавку!", "Успех");
                 }
             }
         }
-
-        private void EditWeapon()
+        private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (grid.CurrentRow?.DataBoundItem is Weapon selected)
+            if (grid.CurrentRow != null && grid.CurrentRow.DataBoundItem is Weapon selectedWeapon)
             {
-                using (var form = new WeaponEditForm(selected))
+
+                using (var form = new WeaponEditForm(selectedWeapon))
                 {
                     if (form.ShowDialog() == DialogResult.OK)
                     {
                         _armory.Update(form.WeaponData);
                         RefreshGrid();
+                        MessageBox.Show("Оружие успешно перековано!", "Успех");
                     }
                 }
             }
             else
             {
-                MessageBox.Show("Выберите оружие из списка!");
+                MessageBox.Show("Выберите оружие из таблицы для редактирования!", "Внимание");
             }
         }
 
-        private void DeleteWeapon()
+        private void btnDelete_Click_1(object sender, EventArgs e)
         {
-            if (grid.CurrentRow?.DataBoundItem is Weapon selected)
+            if (grid.CurrentRow != null && grid.CurrentRow.DataBoundItem is Weapon selectedWeapon)
             {
-                var ans = MessageBox.Show($"Переплавить '{selected.Name}' в лом?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (ans == DialogResult.Yes)
+                var result = MessageBox.Show($"Вы уверены, что хотите переплавить '{selectedWeapon.Name}' в металлолом?",
+                    "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
                 {
-                    _armory.Delete(selected.Id);
+                    _armory.Delete(selectedWeapon.Id);
                     RefreshGrid();
+                    MessageBox.Show("Оружие переплавлено и убрано из ассортимента.", "Успешно");
                 }
             }
+            else
+            {
+                MessageBox.Show("Выберите оружие для удаления!", "Внимание");
+            }
         }
 
-        private void BtnEquip_Click(object sender, EventArgs e)
+        private void btnReset_Click_1(object sender, EventArgs e)
         {
-            int strength = 35;
-            decimal gold = 1500;
+            RefreshGrid();
+        }
+
+        private void btnEquip_Click_1(object sender, EventArgs e)
+        {
+
+            int strength = (int)UserS.Value;
+            decimal gold = UserG.Value;
 
             var matches = _armory.RecommendWeapons(strength, gold);
+
             grid.DataSource = null;
             grid.DataSource = matches;
 
-            MessageBox.Show($"Найдено вариантов под параметры (Сила: {strength}, Золото: {gold}): {matches.Count}", "Подбор экипировки");
+            MessageBox.Show(
+                "Поиск завершен!\n\n" +
+                $"Проверено под силу: {strength}\n" +
+                $"Бюджет: {gold} золотых\n\n" +
+                $"Найдено подходящих вариантов в кузнице: {matches.Count} шт.",
+                "Результат подбора"
+            );
         }
 
-        private void BtnStats_Click(object sender, EventArgs e)
+        private void btnStats_Click_1(object sender, EventArgs e)
         {
             var stats = _armory.GetWeaponTypeStatistics();
-            string msg = "📊 Сводка арсенала по типам оружия:\n\n";
-            foreach (var s in stats)
+            string report = "АНАЛИТИКА АРСЕНАЛА ПО КАТЕГОРИЯМ:\n\n";
+
+            foreach (var i in stats)
             {
-                msg += $"• {s.WeaponType}: {s.TotalCount} шт. | Ср. урон: {s.AverageDamage} | Ср. цена: {s.AveragePrice} зол.\n";
+                report += $"Тип: {i.WeaponType} | Кол-во: {i.TotalCount} шт. | Ср. урон: {i.AverageDamage} | Ср. цена: {i.AveragePrice} зол.\n";
             }
-            MessageBox.Show(msg, "Аналитика кузницы");
+
+            MessageBox.Show(report, "Аналитика кузницы");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
