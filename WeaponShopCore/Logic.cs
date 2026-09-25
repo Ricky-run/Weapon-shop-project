@@ -79,7 +79,7 @@ namespace WeaponShopCore
 
 
 
-        //БИЗНЕС-ФУНКЦИИ        
+        //БИИИЗНЕС     
         public List<Weapon> RecommendWeapons(int warriorStrength, decimal maxGold)
         {
             return _weapons

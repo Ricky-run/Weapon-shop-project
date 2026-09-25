@@ -1,5 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using WeaponShopCore;
 
 namespace WeaponShopWinForms
@@ -8,22 +16,14 @@ namespace WeaponShopWinForms
     {
         public Weapon WeaponData { get; private set; }
 
-        private TextBox txtName;
-        private TextBox txtType;
-        private TextBox txtRarity;
-        private NumericUpDown numDamage;
-        private NumericUpDown numStrength;
-        private NumericUpDown numWeight;
-        private NumericUpDown numPrice;
-        private Button btnSave;
-
         public WeaponEditForm(Weapon weaponToEdit = null)
         {
-            BuildInterface();
+            InitializeComponent();
 
             if (weaponToEdit != null)
             {
-                Text = "Перековка оружия (Редактирование)";
+                this.Text = "Перековка оружия";
+
                 WeaponData = new Weapon
                 {
                     Id = weaponToEdit.Id,
@@ -37,8 +37,9 @@ namespace WeaponShopWinForms
                 };
 
                 txtName.Text = WeaponData.Name;
-                txtType.Text = WeaponData.WeaponType;
-                txtRarity.Text = WeaponData.Rarity;
+                cmbType.SelectedItem = WeaponData.WeaponType;
+                cmbRarity.SelectedItem = WeaponData.Rarity;
+
                 numDamage.Value = WeaponData.Damage;
                 numStrength.Value = WeaponData.RequiredStrength;
                 numWeight.Value = (decimal)WeaponData.Weight;
@@ -46,56 +47,34 @@ namespace WeaponShopWinForms
             }
             else
             {
-                Text = "Ковка нового оружия";
+                this.Text = "Ковка нового оружия";
                 WeaponData = new Weapon();
+                cmbType.SelectedIndex = 0;
+                cmbRarity.SelectedItem = "Обычное";
+                numDamage.Value = 50;
+                numStrength.Value = 25;
+                numWeight.Value = 3.5m;
+                numPrice.Value = 500;
             }
         }
 
-        private void BuildInterface()
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            this.Size = new System.Drawing.Size(380, 420);
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.StartPosition = FormStartPosition.CenterParent;
 
-            var lbl1 = new Label { Text = "Название:", Top = 20, Left = 20, Width = 110 };
-            txtName = new TextBox { Top = 20, Left = 140, Width = 190 };
-
-            var lbl2 = new Label { Text = "Тип оружия:", Top = 60, Left = 20, Width = 110 };
-            txtType = new TextBox { Top = 60, Left = 140, Width = 190 };
-
-            var lbl3 = new Label { Text = "Редкость:", Top = 100, Left = 20, Width = 110 };
-            txtRarity = new TextBox { Top = 100, Left = 140, Width = 190, Text = "Обычное" };
-
-            var lbl4 = new Label { Text = "Базовый урон:", Top = 140, Left = 20, Width = 110 };
-            numDamage = new NumericUpDown { Top = 140, Left = 140, Width = 80, Minimum = 1, Maximum = 1000, Value = 50 };
-
-            var lbl5 = new Label { Text = "Тр. сила:", Top = 180, Left = 20, Width = 110 };
-            numStrength = new NumericUpDown { Top = 180, Left = 140, Width = 80, Minimum = 1, Maximum = 150, Value = 25 };
-
-            var lbl6 = new Label { Text = "Вес (кг):", Top = 220, Left = 20, Width = 110 };
-            numWeight = new NumericUpDown { Top = 220, Left = 140, Width = 80, DecimalPlaces = 1, Minimum = 0.1m, Maximum = 50m, Value = 3.5m };
-
-            var lbl7 = new Label { Text = "Цена (золото):", Top = 260, Left = 20, Width = 110 };
-            numPrice = new NumericUpDown { Top = 260, Left = 140, Width = 100, Maximum = 100000, Value = 500 };
-
-            btnSave = new Button { Text = "Сохранить в кузне", Top = 320, Left = 100, Width = 160, Height = 35 };
-            btnSave.Click += BtnSave_Click;
-
-            this.Controls.AddRange(new Control[] { lbl1, txtName, lbl2, txtType, lbl3, txtRarity, lbl4, numDamage, lbl5, numStrength, lbl6, numWeight, lbl7, numPrice, btnSave });
         }
 
-        private void BtnSave_Click(object sender, EventArgs e)
+        private void btnSave_Click_1(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                MessageBox.Show("Оружие обязано иметь название!", "Внимание кузнеца", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Оружие обязано иметь название!", "Внимание кузнеца");
                 return;
             }
 
             WeaponData.Name = txtName.Text;
-            WeaponData.WeaponType = txtType.Text;
-            WeaponData.Rarity = txtRarity.Text;
+            WeaponData.WeaponType = cmbType.SelectedItem.ToString(); 
+            WeaponData.Rarity = cmbRarity.SelectedItem.ToString();
             WeaponData.Damage = (int)numDamage.Value;
             WeaponData.RequiredStrength = (int)numStrength.Value;
             WeaponData.Weight = (double)numWeight.Value;

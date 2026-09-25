@@ -20,11 +20,11 @@ namespace WeaponShopConsole
 
                 Console.WriteLine("ОРУЖЕЙНАЯ ЛАВКА 'ВЯЛЫЙ МЕЧ'");
                 Console.WriteLine("1. Весь арсенал на складе");
-                Console.WriteLine("2. Выковать новое оружие (Создать)");
-                Console.WriteLine("3. Перековать / Улучшить параметры (Изменить)");
-                Console.WriteLine("4. Сдать оружие в утиль (Удалить)");
-                Console.WriteLine("5. [Бизнес-функция 1] Подобрать снаряжение для воина (по силе и золоту)");
-                Console.WriteLine("6. [Бизнес-функция 2] Аналитика арсенала по типам оружия");
+                Console.WriteLine("2. Выковать новое оружие");
+                Console.WriteLine("3. Перековать / Улучшить параметры");
+                Console.WriteLine("4. Сдать оружие в утиль");
+                Console.WriteLine("5. Подобрать снаряжение для воина (по силе и золоту)");
+                Console.WriteLine("6. Аналитика арсенала по типам оружия");
                 Console.WriteLine("0. Покинуть лавку");
                 Console.Write("\nТвой выбор, путник: ");
 
@@ -41,7 +41,7 @@ namespace WeaponShopConsole
                     default: Console.WriteLine("Ошибка ввода..."); break;
                 }
 
-                Console.WriteLine("\nНажмите Enter, чтобы продолжить...");
+                Console.WriteLine("\nНажмите любую клавишу, чтобы продолжить...");
                 Console.ReadLine();
             }
         }
@@ -127,7 +127,7 @@ namespace WeaponShopConsole
                     return;
                 }
 
-                Console.WriteLine($"Перековываем '{w.Name}'. Нажмите Enter, чтобы оставить старое значение.");
+                Console.WriteLine($"Перековываем '{w.Name}'. Нажмите любую клавишу, чтобы оставить старое значение.");
 
                 Console.Write($"Новое название [{w.Name}]: ");
                 string name = Console.ReadLine();

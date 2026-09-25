@@ -11,7 +11,7 @@ namespace WeaponShopCore
         /// <summary>
         /// Добавляет новое оружие в арсенал.
         /// </summary>
-        /// /// <param name="weapon">Новое оружие.</param>
+        /// <param name="weapon">Новое оружие.</param>
         /// <returns>Созданное оружие с id.</returns>
         Weapon Create(Weapon weapon);
 
