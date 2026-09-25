@@ -21,7 +21,7 @@ namespace WeaponShopCore
 
         public override string ToString()
         {
-            return $"[{Id}] {Name} ({Rarity} {WeaponType}) | Урон: {Damage} | Тр. силы: {RequiredStrength} | Вес: {Weight}кг | Цена: {Price} зол.";
+            return $"[{Id}] {Name} ({Rarity} {WeaponType}) Урон: {Damage} Тр. силы: {RequiredStrength} Вес: {Weight}кг Цена: {Price} зол.";
         }
     }
 }
