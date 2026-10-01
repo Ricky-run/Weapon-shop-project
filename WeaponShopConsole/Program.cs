@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WeaponShopCore;
+using WeaponShopModel;
 
 
 namespace WeaponShopConsole
@@ -116,37 +116,100 @@ namespace WeaponShopConsole
 
         private static void ReforgeWeapon()
         {
-            ShowAllWeapons();
-            Console.Write("\nВведите ID оружия для перековки: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+            Console.WriteLine("\n--- ПЕРЕКОВКА (ИЗМЕНЕНИЕ) ОРУЖИЯ ---");
+            Console.Write("Введите ID оружия для изменения (или 0 для отмены): ");
+
+            // Защита от дурака: если ввели букву или 0 — выходим
+            if (!int.TryParse(Console.ReadLine(), out int id) || id == 0)
             {
-                var w = _armory.GetById(id);
-                if (w == null)
-                {
-                    Console.WriteLine("Оружие с таким ID не найдено!");
-                    return;
-                }
+                Console.WriteLine("Действие отменено. Возврат в главное меню.");
+                return;
+            }
 
-                Console.WriteLine($"Перековываем '{w.Name}'. Нажмите любую клавишу, чтобы оставить старое значение.");
+            var w = _armory.GetById(id);
+            if (w == null)
+            {
+                Console.WriteLine("Оружие с таким ID не найдено!");
+                return;
+            }
 
-                Console.Write($"Новое название [{w.Name}]: ");
-                string name = Console.ReadLine();
+            Console.WriteLine($"\nВыбрано: {w.Name} (Урон: {w.Damage}, Сила: {w.RequiredStrength}, Цена: {w.Price})");
+            Console.WriteLine("Что именно вы хотите изменить?");
+            Console.WriteLine("1. Изменить название");
+            Console.WriteLine("2. Изменить урон");
+            Console.WriteLine("3. Изменить требуемую силу");
+            Console.WriteLine("4. Изменить цену");
+            Console.WriteLine("0. Ничего не менять (случайно нажал)");
+            Console.Write("Ваш выбор: ");
 
-                if (name != "")  {w.Name = name; }
+            string choice = Console.ReadLine();
 
+            switch (choice)
+            {
+                case "1":
+                    Console.Write($"Текущее название: '{w.Name}'. Введите новое: ");
+                    string newN = Console.ReadLine();
+                    if (newN != "")
+                    {
+                        w.Name = newN;
+                        _armory.Update(w);
+                        Console.WriteLine("Название успешно обновлено!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Пустое имя! Изменения отменены.");
+                    }
+                    break;
 
-                Console.Write($"Новый урон [{w.Damage}]: ");
-                string dmg = Console.ReadLine();
-                if (int.TryParse(dmg, out int d)) w.Damage = d;
+                case "2":
+                    Console.Write($"Текущий урон: {w.Damage}. Введите новый: ");
+                    if (int.TryParse(Console.ReadLine(), out int newD) && newD > 0)
+                    {
+                        w.Damage = newD;
+                        _armory.Update(w);
+                        Console.WriteLine("Урон успешно обновлен!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Некорректное число! Урон не изменен.");
+                    }
+                    break;
 
-                Console.Write($"Новая цена [{w.Price}]: ");
-                string price = Console.ReadLine();
+                case "3":
+                    Console.Write($"Текущая сила: {w.RequiredStrength}. Введите новую: ");
+                    if (int.TryParse(Console.ReadLine(), out int newS) && newS >= 0)
+                    {
+                        w.RequiredStrength = newS;
+                        _armory.Update(w);
+                        Console.WriteLine("Требование к силе успешно обновлено!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Некорректное число! Сила не изменена.");
+                    }
+                    break;
 
+                case "4":
+                    Console.Write($"Текущая цена: {w.Price}. Введите новую цену: ");
+                    if (decimal.TryParse(Console.ReadLine(), out decimal newP) && newP >= 0)
+                    {
+                        w.Price = newP;
+                        _armory.Update(w);
+                        Console.WriteLine("Цена успешно обновлена!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Некорректная цена! Цена не изменена.");
+                    }
+                    break;
 
-                if (decimal.TryParse(price, out decimal p)) w.Price = p;
+                case "0":
+                    Console.WriteLine("Никаких изменений не внесено.");
+                    break;
 
-                _armory.Update(w);
-                Console.WriteLine("Оружие успешно перековано!");
+                default:
+                    Console.WriteLine("Неверный пункт. Редактирование отменено.");
+                    break;
             }
         }
 

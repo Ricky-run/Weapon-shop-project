@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WeaponShopCore
+namespace WeaponShopModel
 {
     /// <summary>
     /// Контракт бизнес-логики оружейной лавки.

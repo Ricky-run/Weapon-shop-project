@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using WeaponShopCore;
+using WeaponShopModel;
 
 namespace WeaponShopWinForms
 {

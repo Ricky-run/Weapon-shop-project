@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.37614.0 d17.14
+VisualStudioVersion = 17.14.37614.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaponShopCore", "WeaponShopCore.csproj", "{2EFFAA5D-976B-4A13-8E5D-6C7B19AA0EA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaponShopModel", "WeaponShopModel.csproj", "{2EFFAA5D-976B-4A13-8E5D-6C7B19AA0EA8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaponShopConsole", "..\WeaponShopConsole\WeaponShopConsole.csproj", "{198494DF-317E-420E-8426-4F81BB548135}"
 EndProject
