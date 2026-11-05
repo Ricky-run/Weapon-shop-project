@@ -14,9 +14,9 @@ namespace WeaponShopWinForms
 {
     public partial class MainMenuForm : Form
     {
-        private readonly Logic _armory;
+        private readonly ILogic _armory;
 
-        public MainMenuForm(Logic armory)
+        public MainMenuForm(ILogic armory)
         {
             InitializeComponent();
             _armory = armory;

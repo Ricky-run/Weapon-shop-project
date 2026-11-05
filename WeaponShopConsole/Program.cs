@@ -1,7 +1,8 @@
-﻿using System;
+﻿using BusinessLogic;
+using Ninject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BusinessLogic;
 using WeaponShopModel;
 
 
@@ -13,21 +14,10 @@ namespace WeaponShopConsole
 
         static void Main(string[] args)
         {
-            Console.WriteLine("   ОРУЖЕЙНАЯ ЛАВКА «ВЯЛЫЙ МЕЧ»");
-            Console.WriteLine("Выберите технологию доступа к данным:");
-            Console.WriteLine("1 - Entity Framework");
-            Console.WriteLine("2 - Dapper");
-            Console.Write("\nВаш выбор, путник: ");
 
-            string choice = Console.ReadLine();
-            bool useDapper = false;
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
 
-            if (choice == "2")
-            {
-                useDapper = true;
-            }
-
-            _armory = new Logic(useDapper);
+            _armory = ninjectKernel.Get<ILogic>();
 
             while (true)
             {
@@ -246,7 +236,7 @@ namespace WeaponShopConsole
             ShowAllWeapons();
             Console.Write("\nВведите ID оружия для изменения (или 0 для отмены): ");
 
-            // Защита от дурака: если ввели букву или 0 — выходим
+            
             if (!int.TryParse(Console.ReadLine(), out int id) || id == 0)
             {
                 Console.WriteLine("Действие отменено. Возврат в меню.");
@@ -276,7 +266,6 @@ namespace WeaponShopConsole
                     Console.Write($"Текущее название: '{w.Name}'. Введите новое: ");
                     string newN = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newN))
-                        
                     {
                         w.Name = newN.Trim();
                         _armory.Update(w);
@@ -291,14 +280,14 @@ namespace WeaponShopConsole
                 case "2":
                     while (true)
                     {
-                    Console.Write($"Текущий урон: {w.Damage}. Введите новый: ");
+                        Console.Write($"Текущий урон: {w.Damage}. Введите новый: ");
                         if (int.TryParse(Console.ReadLine(), out int newD) && newD >= 0)
-                    {
-                        w.Damage = newD;
-                        _armory.Update(w);
-                        Console.WriteLine("Урон успешно обновлен!");
-                            break;
-                    }
+                        {
+                            w.Damage = newD;
+                            _armory.Update(w);
+                            Console.WriteLine("Урон успешно обновлен!");
+                            break; 
+                        }
                         Console.WriteLine("Ошибка! Введите положительное целое число.");
                     }
                     break;
@@ -306,21 +295,17 @@ namespace WeaponShopConsole
                 case "3":
                     while (true)
                     {
-                        Console.WriteLine("Некорректное число! Сила не изменена.");
+                        Console.Write($"Текущая цена: {w.Price}. Введите новую цену: ");
+                        if (decimal.TryParse(Console.ReadLine(), out decimal newP) && newP >= 0)
+                        {
+                            w.Price = newP;
+                            _armory.Update(w);
+                            Console.WriteLine("Цена успешно обновлена!");
+                            break; 
+                        }
+                        Console.WriteLine("Ошибка! Введите положительное число.");
                     }
                     break;
-
-                case "4":
-                    Console.Write($"Текущая цена: {w.Price}. Введите новую цену: ");
-                    if (decimal.TryParse(Console.ReadLine(), out decimal newP) && newP >= 0)
-                    {
-                        w.Price = newP;
-                        _armory.Update(w);
-                        Console.WriteLine("Цена успешно обновлена!");
-                        break; 
-                    }
-                    Console.WriteLine("Ошибка! Введите положительное число.");
-                    break; 
 
                 case "0":
                     Console.WriteLine("Никаких изменений не внесено.");

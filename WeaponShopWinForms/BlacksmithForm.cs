@@ -14,9 +14,9 @@ namespace WeaponShopWinForms
 {
     public partial class BlacksmithForm : Form
     {
-        private Logic _armory;
+        private ILogic _armory;
 
-        public BlacksmithForm(Logic armory)
+        public BlacksmithForm(ILogic armory)
         {
             InitializeComponent();
             _armory = armory;

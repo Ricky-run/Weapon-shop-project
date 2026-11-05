@@ -12,17 +12,9 @@ namespace BusinessLogic
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public Logic(bool useDapper = false)
+        public Logic(IUnitOfWork unitOfWork)
         {
-
-            if (useDapper)
-            {
-                _unitOfWork = new DapperUnitOfWork();
-            }
-            else
-            {
-                _unitOfWork = new EFUnitOfWork();
-            }
+            _unitOfWork = unitOfWork;
 
             if (!_unitOfWork.Weapons.ReadAll().Any())
             {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ninject;           
 
 namespace WeaponShopWinForms
 {
@@ -19,11 +20,12 @@ namespace WeaponShopWinForms
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            
-            ILogic logic = new Logic(useDapper: false);
-            
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
 
-            Application.Run(new Choice());
+            ILogic logic = ninjectKernel.Get<ILogic>();
+
+
+            Application.Run(new MainMenuForm(logic));
 
 
         }

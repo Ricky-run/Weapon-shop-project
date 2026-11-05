@@ -86,12 +86,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Choice.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Choice.Designer.cs">
-      <DependentUpon>Choice.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,9 +123,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BlacksmithForm.resx">
       <DependentUpon>BlacksmithForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Choice.resx">
-      <DependentUpon>Choice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
