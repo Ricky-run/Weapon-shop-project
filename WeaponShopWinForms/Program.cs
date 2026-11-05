@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BusinessLogic;
+using DataAccessLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BusinessLogic;
 
 namespace WeaponShopWinForms
 {
@@ -20,9 +21,11 @@ namespace WeaponShopWinForms
 
             
             ILogic logic = new Logic(useDapper: false);
-
             
-            Application.Run(new Form1(logic));
+
+            Application.Run(new Choice());
+
+
         }
     }
 }

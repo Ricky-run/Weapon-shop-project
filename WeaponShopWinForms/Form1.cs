@@ -29,11 +29,13 @@ namespace WeaponShopWinForms
             RefreshGrid();
         }
 
+
         private void RefreshGrid()
         {
             grid.DataSource = null;
             grid.DataSource = _armory.GetAll();
         }
+
 
         private void btnAdd_Click_2(object sender, EventArgs e)
         {
@@ -42,15 +44,22 @@ namespace WeaponShopWinForms
 
             if (editForm.ShowDialog() == DialogResult.OK)
             {
-                grid.DataSource = null;
-                grid.DataSource = _armory.GetAll();
+                
+                    _armory.Create(editForm.WeaponData);
+
+                    grid.DataSource = null;
+                    grid.DataSource = _armory.GetAll();
+
+                    MessageBox.Show("Оружие успешно выковано!", "Успех");
+                }
+                
             }
-        }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (grid.CurrentRow != null && grid.CurrentRow.DataBoundItem is Weapon selectedWeapon)
             {
+
                 using (var form = new WeaponEditForm(selectedWeapon))
                 {
                     if (form.ShowDialog() == DialogResult.OK)
@@ -94,6 +103,7 @@ namespace WeaponShopWinForms
 
         private void btnEquip_Click_1(object sender, EventArgs e)
         {
+
             int strength = (int)UserS.Value;
             decimal gold = UserG.Value;
 
@@ -130,3 +140,4 @@ namespace WeaponShopWinForms
         }
     }
 }
+

@@ -20,7 +20,8 @@ namespace DataAccessLayer
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
-                string sql = "INSERT INTO Blacksmiths (Name) VALUES (@Name)";
+                string sql = @"INSERT INTO Blacksmiths (Name, Specialization, SkillLevel, PriceMultiplier) 
+                       VALUES (@Name, @Specialization, @SkillLevel, @PriceMultiplier)";
                 db.Execute(sql, item);
             }
         }
@@ -56,7 +57,12 @@ namespace DataAccessLayer
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
-                string sql = "UPDATE Blacksmiths SET Name = @Name WHERE Id = @Id";
+                string sql = @"UPDATE Blacksmiths 
+                       SET Name = @Name, 
+                           Specialization = @Specialization, 
+                           SkillLevel = @SkillLevel, 
+                           PriceMultiplier = @PriceMultiplier 
+                       WHERE Id = @Id";
                 db.Execute(sql, item);
             }
         }

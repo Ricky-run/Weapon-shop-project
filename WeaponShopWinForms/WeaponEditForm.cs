@@ -73,7 +73,7 @@ namespace WeaponShopWinForms
             }
 
             WeaponData.Name = txtName.Text;
-            WeaponData.WeaponType = cmbType.SelectedItem.ToString(); 
+            WeaponData.WeaponType = cmbType.SelectedItem.ToString();
             WeaponData.Rarity = cmbRarity.SelectedItem.ToString();
             WeaponData.Damage = (int)numDamage.Value;
             WeaponData.RequiredStrength = (int)numStrength.Value;
@@ -85,3 +85,4 @@ namespace WeaponShopWinForms
         }
     }
 }
+

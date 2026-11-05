@@ -14,8 +14,15 @@ namespace BusinessLogic
 
         public Logic(bool useDapper = false)
         {
-            
-            _unitOfWork = new UnitOfWork(useDapper);
+
+            if (useDapper)
+            {
+                _unitOfWork = new DapperUnitOfWork();
+            }
+            else
+            {
+                _unitOfWork = new EFUnitOfWork();
+            }
 
             if (!_unitOfWork.Weapons.ReadAll().Any())
             {
@@ -25,8 +32,9 @@ namespace BusinessLogic
                 Create(new Weapon { Name = "Орочий Тесак", WeaponType = "Меч", Damage = 55, RequiredStrength = 25, Weight = 3.2, Price = 400, Rarity = "Редкое" });
                 Create(new Weapon { Name = "Молот Громовержца", WeaponType = "Молот", Damage = 130, RequiredStrength = 65, Weight = 9.0, Price = 2500, Rarity = "Легендарное" });
                 Create(new Weapon { Name = "Охотничий кинжал", WeaponType = "Кинжал", Damage = 25, RequiredStrength = 10, Weight = 0.8, Price = 90, Rarity = "Обычное" });
+
             }
-        }
+           }
         public Weapon Create(Weapon weapon)
         {
             if (weapon == null || weapon.Name == "")

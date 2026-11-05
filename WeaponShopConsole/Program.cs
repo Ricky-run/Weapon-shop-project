@@ -4,6 +4,7 @@ using System.Linq;
 using BusinessLogic;
 using WeaponShopModel;
 
+
 namespace WeaponShopConsole
 {
     internal class Program
@@ -12,12 +13,10 @@ namespace WeaponShopConsole
 
         static void Main(string[] args)
         {
-            Console.WriteLine("==================================");
             Console.WriteLine("   ОРУЖЕЙНАЯ ЛАВКА «ВЯЛЫЙ МЕЧ»");
-            Console.WriteLine("==================================");
             Console.WriteLine("Выберите технологию доступа к данным:");
-            Console.WriteLine("1 - Entity Framework (Классическая ORM)");
-            Console.WriteLine("2 - Dapper (Микро-ORM / Ручной SQL)");
+            Console.WriteLine("1 - Entity Framework");
+            Console.WriteLine("2 - Dapper");
             Console.Write("\nВаш выбор, путник: ");
 
             string choice = Console.ReadLine();
@@ -34,9 +33,7 @@ namespace WeaponShopConsole
             {
                 Console.Clear();
 
-                Console.WriteLine("==================================");
                 Console.WriteLine("   ОРУЖЕЙНАЯ ЛАВКА «ВЯЛЫЙ МЕЧ»");
-                Console.WriteLine("==================================");
                 Console.WriteLine("1. Оружейная лавка");
                 Console.WriteLine("2. Кузнечная мастерская");
                 Console.WriteLine("0. Покинуть лавку");
@@ -69,7 +66,7 @@ namespace WeaponShopConsole
             {
                 Console.Clear();
 
-                Console.WriteLine("=== ОРУЖЕЙНАЯ ЛАВКА ===");
+                Console.WriteLine("    ОРУЖЕЙНАЯ ЛАВКА");
                 Console.WriteLine("1. Весь арсенал на складе");
                 Console.WriteLine("2. Выковать новое оружие");
                 Console.WriteLine("3. Перековать / улучшить оружие");
@@ -104,7 +101,7 @@ namespace WeaponShopConsole
             {
                 Console.Clear();
 
-                Console.WriteLine("=== КУЗНЕЧНАЯ МАСТЕРСКАЯ ===");
+                Console.WriteLine("    КУЗНЕЧНАЯ МАСТЕРСКАЯ");
                 Console.WriteLine("1. Список кузнецов");
                 Console.WriteLine("2. Найти кузнеца по специализации");
                 Console.WriteLine("3. Рассчитать стоимость ковки");
@@ -156,7 +153,7 @@ namespace WeaponShopConsole
 
             while (true)
             {
-                Console.Write("Название: ");
+            Console.Write("Название: ");
                 string input = Console.ReadLine();
                 if (!string.IsNullOrWhiteSpace(input))
                 {
@@ -179,6 +176,7 @@ namespace WeaponShopConsole
                 Console.WriteLine("Ошибка! Введите тип оружия строго из списка.\n");
             }
 
+
             while (true)
             {
                 Console.Write("Редкость (Обычное/Редкое/Эпическое/Легендарное): ");
@@ -194,7 +192,7 @@ namespace WeaponShopConsole
 
             while (true)
             {
-                Console.Write("Урон: ");
+            Console.Write("Урон: ");
                 if (int.TryParse(Console.ReadLine(), out int damage) && damage >= 0)
                 {
                     w.Damage = damage;
@@ -205,7 +203,7 @@ namespace WeaponShopConsole
 
             while (true)
             {
-                Console.Write("Требуемая сила воина: ");
+            Console.Write("Требуемая сила воина: ");
                 if (int.TryParse(Console.ReadLine(), out int strength) && strength >= 0)
                 {
                     w.RequiredStrength = strength;
@@ -216,7 +214,7 @@ namespace WeaponShopConsole
 
             while (true)
             {
-                Console.Write("Вес (кг): ");
+            Console.Write("Вес (кг): ");
                 if (double.TryParse(Console.ReadLine(), out double weight) && weight >= 0)
                 {
                     w.Weight = weight;
@@ -227,7 +225,7 @@ namespace WeaponShopConsole
 
             while (true)
             {
-                Console.Write("Цена в золоте: ");
+            Console.Write("Цена в золоте: ");
                 if (decimal.TryParse(Console.ReadLine(), out decimal price) && price >= 0)
                 {
                     w.Price = price;
@@ -239,14 +237,16 @@ namespace WeaponShopConsole
             _armory.Create(w);
             Console.WriteLine("Оружие успешно выковано и добавлено в лавку!");
             ShowAllWeapons();
+
         }
 
         private static void ReforgeWeapon()
         {
-            Console.WriteLine("\n--- ПЕРЕКОВКА (ИЗМЕНЕНИЕ) ОРУЖИЯ ---");
+            Console.WriteLine("\n    ПЕРЕКОВКА ОРУЖИЯ ");
             ShowAllWeapons();
             Console.Write("\nВведите ID оружия для изменения (или 0 для отмены): ");
 
+            // Защита от дурака: если ввели букву или 0 — выходим
             if (!int.TryParse(Console.ReadLine(), out int id) || id == 0)
             {
                 Console.WriteLine("Действие отменено. Возврат в меню.");
@@ -269,6 +269,7 @@ namespace WeaponShopConsole
             Console.Write("Ваш выбор: ");
 
             string choice = Console.ReadLine();
+
             switch (choice)
             {
                 case "1":
@@ -276,42 +277,61 @@ namespace WeaponShopConsole
                     string newN = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newN))
                         
-{
+                    {
                         w.Name = newN.Trim();
                         _armory.Update(w);
                         Console.WriteLine("Название успешно обновлено!");
                     }
+                    else
+                    {
+                        Console.WriteLine("Пустое имя! Изменения отменены.");
+                    }
                     break;
+
                 case "2":
                     while (true)
                     {
-                        Console.Write($"Текущий урон: {w.Damage}. Введите новый: ");
+                    Console.Write($"Текущий урон: {w.Damage}. Введите новый: ");
                         if (int.TryParse(Console.ReadLine(), out int newD) && newD >= 0)
-                        {
-                            w.Damage = newD;
-                            _armory.Update(w);
-                            Console.WriteLine("Урон успешно обновлен!");
+                    {
+                        w.Damage = newD;
+                        _armory.Update(w);
+                        Console.WriteLine("Урон успешно обновлен!");
                             break;
-                        }
+                    }
                         Console.WriteLine("Ошибка! Введите положительное целое число.");
                     }
                     break;
+
                 case "3":
                     while (true)
                     {
-                        Console.Write($"Текущая цена: {w.Price}. Введите новую цену: ");
-                        if (decimal.TryParse(Console.ReadLine(), out decimal newP) && newP >= 0)
-                        {
-                            w.Price = newP;
-                            _armory.Update(w);
-                            Console.WriteLine("Цена успешно обновлена!");
-                            break;
-                        }
-                        Console.WriteLine("Ошибка! Введите положительное число.");
+                        Console.WriteLine("Некорректное число! Сила не изменена.");
                     }
+                    break;
+
+                case "4":
+                    Console.Write($"Текущая цена: {w.Price}. Введите новую цену: ");
+                    if (decimal.TryParse(Console.ReadLine(), out decimal newP) && newP >= 0)
+                    {
+                        w.Price = newP;
+                        _armory.Update(w);
+                        Console.WriteLine("Цена успешно обновлена!");
+                        break; 
+                    }
+                    Console.WriteLine("Ошибка! Введите положительное число.");
+                    break; 
+
+                case "0":
+                    Console.WriteLine("Никаких изменений не внесено.");
+                    break;
+
+                default:
+                    Console.WriteLine("Неверный пункт. Редактирование отменено.");
                     break;
             }
         }
+
         private static void ScrapWeapon()
         {
             ShowAllWeapons();
@@ -326,7 +346,7 @@ namespace WeaponShopConsole
             else
             {
                 Console.WriteLine("Действие отменено.");
-            }
+        }
         }
         private static void EquipWarrior()
         {
@@ -335,13 +355,13 @@ namespace WeaponShopConsole
             decimal gold;
             while (true)
             {
-                Console.Write("Сила воина (характеристика): ");
+            Console.Write("Сила воина (характеристика): ");
                 if (int.TryParse(Console.ReadLine(), out str) && str >= 0) break;
                 Console.WriteLine("Ошибка! Введите положительное целое число.");
             }
             while (true)
             {
-                Console.Write("Сколько золота в кошельке: ");
+            Console.Write("Сколько золота в кошельке: ");
                 if (decimal.TryParse(Console.ReadLine(), out gold) && gold >= 0) break;
                 Console.WriteLine("Ошибка! Введите корректное число золота.");
             }
@@ -357,6 +377,7 @@ namespace WeaponShopConsole
                 Console.WriteLine($"-> {i.Name} ({i.WeaponType}) | Урон: {i.Damage} | Цена: {i.Price}");
             }
         }
+
         private static void ShowArmoryStats()
         {
             Console.WriteLine("\nАНАЛИТИКА АРСЕНАЛА ПО КАТЕГОРИЯМ");
