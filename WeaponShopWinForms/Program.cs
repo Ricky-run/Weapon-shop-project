@@ -23,7 +23,7 @@ namespace WeaponShopWinForms
             IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
 
             ILogic logic = ninjectKernel.Get<ILogic>();
-
+            IKernel kernel = new StandardKernel(new SimpleConfigModule());
 
             Application.Run(new MainMenuForm(logic));
 

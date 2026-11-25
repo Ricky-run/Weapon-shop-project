@@ -12,14 +12,13 @@ namespace DataAccessLayer
         public IRepository<Weapon> Weapons { get; }
         public IRepository<Blacksmith> Blacksmiths { get; }
 
+        // Должен быть ТОЛЬКО этот конструктор!
         public DapperUnitOfWork(string connectionString = null)
         {
             string connStr = connectionString ?? ConfigurationManager.ConnectionStrings["WeaponShopConnection"]?.ConnectionString;
-
             Weapons = new DapperWeaponRepository(connStr);
             Blacksmiths = new DapperBlacksmithRepository(connStr);
         }
-
         /// <summary>
         /// В Dapper-репозиториях запросы отправляются в БД сразу при вызове Add/Update/Delete.
         /// Метод присутствует для сохранения единого контракта с EFUnitOfWork.

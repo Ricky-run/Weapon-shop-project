@@ -11,10 +11,16 @@ namespace BusinessLogic
     public class Logic : ILogic
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public Logic(IUnitOfWork unitOfWork)
+        private readonly LogicFunctions _businessFunctions;
+        public Logic(IUnitOfWork unitOfWork, LogicFunctions businessFunctions)
         {
             _unitOfWork = unitOfWork;
+            _businessFunctions = businessFunctions;
+        }
+
+        public void InitializeData()
+        {
+            
 
             if (!_unitOfWork.Weapons.ReadAll().Any())
             {
@@ -24,18 +30,18 @@ namespace BusinessLogic
                 Create(new Weapon { Name = "Орочий Тесак", WeaponType = "Меч", Damage = 55, RequiredStrength = 25, Weight = 3.2, Price = 400, Rarity = "Редкое" });
                 Create(new Weapon { Name = "Молот Громовержца", WeaponType = "Молот", Damage = 130, RequiredStrength = 65, Weight = 9.0, Price = 2500, Rarity = "Легендарное" });
                 Create(new Weapon { Name = "Охотничий кинжал", WeaponType = "Кинжал", Damage = 25, RequiredStrength = 10, Weight = 0.8, Price = 90, Rarity = "Обычное" });
-
             }
-           }
+        }
+
         public Weapon Create(Weapon weapon)
         {
-            if (weapon == null || weapon.Name == "")
+            if (weapon == null || string.IsNullOrWhiteSpace(weapon.Name))
             {
                 return null;
             }
 
             _unitOfWork.Weapons.Add(weapon);
-            _unitOfWork.Save();
+            _unitOfWork.Save(); 
 
             return weapon;
         }
@@ -77,28 +83,14 @@ namespace BusinessLogic
 
         public List<Weapon> RecommendWeapons(int warriorStrength, decimal maxGold)
         {
-
-            return GetAll().Where(w => w.RequiredStrength <= warriorStrength && w.Price <= maxGold).OrderByDescending(w => w.Damage).ToList();
+            var allWeapons = GetAll();
+            return _businessFunctions.RecommendWeapons(allWeapons, warriorStrength, maxGold);
         }
 
         public List<WeaponTypeStat> GetWeaponTypeStatistics()
         {
-            var result = new List<WeaponTypeStat>();
-
-            var groups = GetAll().GroupBy(w => w.WeaponType);
-
-            foreach (var group in groups)
-            {
-                var stat = new WeaponTypeStat();
-                stat.WeaponType = group.Key;
-                stat.TotalCount = group.Count();
-                stat.AverageDamage = Math.Round(group.Average(w => w.Damage), 1);
-                stat.AveragePrice = Math.Round(group.Average(w => w.Price), 2);
-
-                result.Add(stat);
-            }
-
-            return result;
+            var allWeapons = GetAll();
+            return _businessFunctions.GetWeaponTypeStatistics(allWeapons);
         }
         public List<Blacksmith> GetAllBlacksmiths()
         {
@@ -107,7 +99,8 @@ namespace BusinessLogic
 
         public List<Blacksmith> FindBlacksmiths(string specialization, int minSkill)
         {
-            return GetAllBlacksmiths().Where(b => b.Specialization == specialization && b.SkillLevel >= minSkill).ToList();
+            var allBlacksmiths = GetAllBlacksmiths();
+            return _businessFunctions.FindBlacksmiths(allBlacksmiths, specialization, minSkill);
         }
 
         public Blacksmith GetBlacksmithById(int id)
@@ -118,12 +111,7 @@ namespace BusinessLogic
         public decimal CalculateForgingPrice(decimal basePrice, int blacksmithId)
         {
             var blacksmith = GetBlacksmithById(blacksmithId);
-            if (blacksmith == null)
-            {
-                throw new ArgumentException("Кузнец с таким ID не найден!");
-            }
-
-            return basePrice * blacksmith.PriceMultiplier;
+            return _businessFunctions.CalculateForgingPrice(basePrice, blacksmith);
         }
 
         public Blacksmith CreateBlacksmith(Blacksmith blacksmith)

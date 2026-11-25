@@ -14,10 +14,22 @@ namespace WeaponShopConsole
 
         static void Main(string[] args)
         {
-
-            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
-
+             try
+             {
+               IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
             _armory = ninjectKernel.Get<ILogic>();
+
+            _armory.InitializeData();
+
+
+             }
+             catch (Exception ex)
+             {
+                 Console.WriteLine("ОШИБКА: " + ex.Message);
+                 if (ex.InnerException != null)
+                     Console.WriteLine("ДЕТАЛИ: " + ex.InnerException.Message);
+                 Console.ReadKey();
+             }
 
             while (true)
             {

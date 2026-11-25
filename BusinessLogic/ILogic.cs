@@ -55,13 +55,65 @@ namespace BusinessLogic
         /// Группирует оружие по категориям и считает средний урон и цену.
         /// </summary>
         /// <returns>Список статистики по каждому типу оружия.</returns>
+        /// <summary>
+        /// Группирует оружие по категориям и считает средний урон и цену.
+        /// </summary>
+        /// <returns>Список статистики по каждому типу оружия.</returns>
         List<WeaponTypeStat> GetWeaponTypeStatistics();
+
+        /// <summary>
+        /// Возвращает полный список кузнецов.
+        /// </summary>
+        /// <returns>Список всех кузнецов.</returns>
         List<Blacksmith> GetAllBlacksmiths();
+
+        /// <summary>
+        /// Находит кузнецов по специализации и минимальному уровню мастерства.
+        /// </summary>
+        /// <param name="specialization">Специализация кузнеца (например, "Меч", "Топор").</param>
+        /// <param name="minSkill">Минимальный уровень мастерства.</param>
+        /// <returns>Список подходящих кузнецов.</returns>
         List<Blacksmith> FindBlacksmiths(string specialization, int minSkill);
+
+        /// <summary>
+        /// Возвращает кузнеца по его id.
+        /// </summary>
+        /// <param name="id">id кузнеца.</param>
+        /// <returns>Найденный кузнец или null, если не найден.</returns>
         Blacksmith GetBlacksmithById(int id);
+
+        /// <summary>
+        /// Рассчитывает цену ковки с учетом наценки кузнеца.
+        /// </summary>
+        /// <param name="basePrice">Базовая стоимость предмета.</param>
+        /// <param name="blacksmithId">id кузнеца, выполняющего работу.</param>
+        /// <returns>Итоговая стоимость ковки.</returns>
         decimal CalculateForgingPrice(decimal basePrice, int blacksmithId);
+
+        /// <summary>
+        /// Добавляет нового кузнеца в список.
+        /// </summary>
+        /// <param name="blacksmith">Новый кузнец.</param>
+        /// <returns>Созданный кузнец с id.</returns>
         Blacksmith CreateBlacksmith(Blacksmith blacksmith);
+
+        /// <summary>
+        /// Обновляет данные кузнеца.
+        /// </summary>
+        /// <param name="blacksmith">Кузнец с обновленными полями.</param>
+        /// <returns>True, если запись обновлена, иначе false.</returns>
         bool UpdateBlacksmith(Blacksmith blacksmith);
+
+        /// <summary>
+        /// Удаляет кузнеца по его id.
+        /// </summary>
+        /// <param name="id">id удаляемого кузнеца.</param>
+        /// <returns>True, если удаление прошло успешно, иначе false.</returns>
         bool DeleteBlacksmith(int id);
+
+        /// <summary>
+        /// Инициализирует базу данных начальными данными (если она пуста).
+        /// </summary>
+        void InitializeData();
     }
 }
