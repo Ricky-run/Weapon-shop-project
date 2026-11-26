@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using WeaponShopModel;
-using BusinessLogic;
+
 
 namespace WeaponShopWinForms
 {
@@ -38,8 +38,29 @@ namespace WeaponShopWinForms
             BlacksmithData = new Blacksmith();
         }
 
-        public BlacksmithEditForm(Blacksmith blacksmith) : this()
+        public BlacksmithEditForm(Blacksmith blacksmith = null) 
         {
+            InitializeComponent();
+
+
+            cmbSpecialization.Items.AddRange(new object[]
+            {
+            "Мечи", "Топоры", "Молоты", "Копья", "Кинжалы"
+            });
+            numSkill.Minimum = 0;
+            numSkill.Maximum = 100;
+            numMultiplier.Minimum = 1;
+            numMultiplier.Maximum = 100;
+            numMultiplier.DecimalPlaces = 2;
+            numMultiplier.Increment = 0.1m;
+
+            if (blacksmith == null)
+            {
+                BlacksmithData = new Blacksmith();
+                return; 
+            }
+
+        
             BlacksmithData = new Blacksmith
             {
                 Id = blacksmith.Id,
@@ -52,7 +73,7 @@ namespace WeaponShopWinForms
             txtName.Text = blacksmith.Name;
             cmbSpecialization.SelectedItem = blacksmith.Specialization;
             numSkill.Value = blacksmith.SkillLevel;
-            numMultiplier.Value = (decimal)blacksmith.PriceMultiplier;
+            numMultiplier.Value = blacksmith.PriceMultiplier;
         }
 
 

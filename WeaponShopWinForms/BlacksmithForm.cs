@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+using Shared;
+using Shared.Dto;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,182 +11,113 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeaponShopModel;
-using BusinessLogic;
 
 namespace WeaponShopWinForms
 {
-    public partial class BlacksmithForm : Form
+    public partial class BlacksmithForm : Form, IBlacksmithView
     {
-        private ILogic _armory;
+        public event Action LoadBlacksmithsRequested;
+        public event Action<BlacksmithDto> AddBlacksmithRequested;
+        public event Action<BlacksmithDto> UpdateBlacksmithRequested;
+        public event Action<int> DeleteBlacksmithRequested;
+        public event Action<string, int> FindBlacksmithsRequested;
+        public event Action<int, decimal> CalculateForgingPriceRequested;
+        public event Action<int> GetBlacksmithByIdRequested;
 
-        public BlacksmithForm(ILogic armory)
+        public BlacksmithForm()
         {
             InitializeComponent();
-            _armory = armory;
-            RefreshGrid();
+            Load += (s, e) => LoadBlacksmithsRequested?.Invoke();
         }
 
-    
-        private void RefreshGrid()
-        {
-            gridBlacksmiths.DataSource = null;
-            gridBlacksmiths.DataSource = _armory.GetAllBlacksmiths();
-        }
-
-
-        private void btnExit_Click_1(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+        private void btnRefresh_Click_1(object sender, EventArgs e)
+            => LoadBlacksmithsRequested?.Invoke();
 
         private void btnAdd_Click_1(object sender, EventArgs e)
+            => OpenBlacksmithDialog(null, dto => AddBlacksmithRequested?.Invoke(dto));
+
+        private void btnEdit_Click_1(object sender, EventArgs e)
         {
-            var b = new Blacksmith();
-
-            using (var form = new BlacksmithEditForm())
-            {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    b = form.BlacksmithData;
-
-                    var created = _armory.CreateBlacksmith(b);
-
-                    if (created != null)
-                    {
-                        RefreshGrid();
-                        MessageBox.Show("Кузнец успешно нанят!", "Успех");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Проверьте введённые данные.", "Ошибка");
-                    }
-                }
-            }
+            if (gridBlacksmiths.CurrentRow?.DataBoundItem is BlacksmithDto selected)
+                OpenBlacksmithDialog(selected, dto => UpdateBlacksmithRequested?.Invoke(dto));
         }
 
         private void btnDelete_Click_2(object sender, EventArgs e)
         {
-            if (gridBlacksmiths.CurrentRow != null &&
-            gridBlacksmiths.CurrentRow.DataBoundItem is Blacksmith selected)
+            if (gridBlacksmiths.CurrentRow?.DataBoundItem is BlacksmithDto selected)
             {
-                var result = MessageBox.Show(
-                    $"Уволить кузнеца {selected.Name}?",
-                    "Подтверждение",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-                    if (_armory.DeleteBlacksmith(selected.Id))
-                    {
-                        RefreshGrid();
-                        MessageBox.Show("Кузнец уволен.", "Успех");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Не удалось уволить кузнеца.", "Ошибка");
-                    }
-                }
+                if (MessageBox.Show($"Уволить {selected.Name}?", "Подтверждение",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    DeleteBlacksmithRequested?.Invoke(selected.Id);
             }
-            else
-            {
-                MessageBox.Show("Выберите кузнеца из таблицы!", "Внимание");
-            }
-
-        }
-
-        private void btnEdit_Click_1(object sender, EventArgs e)
-        {
-            if (gridBlacksmiths.CurrentRow != null &&
-            gridBlacksmiths.CurrentRow.DataBoundItem is Blacksmith selected)
-            {
-                using (var form = new BlacksmithEditForm(selected))
-                {
-                    if (form.ShowDialog() == DialogResult.OK)
-                    {
-                        if (_armory.UpdateBlacksmith(form.BlacksmithData))
-                        {
-                            RefreshGrid();
-                            MessageBox.Show("Данные кузнеца обновлены!", "Успех");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Не удалось обновить данные.", "Ошибка");
-                        }
-                    }
-                }
-            }
+            else MessageBox.Show("Выберите кузнеца.", "Внимание");
         }
 
         private void btnSearch_Click_1(object sender, EventArgs e)
         {
-            string specialization = txtSpecialization.Text.Trim();
+            string spec = txtSpecialization.Text.Trim();
             int skill = (int)numSkill.Value;
-
-            if (specialization != "Мечи" &&
-                specialization != "Топоры" &&
-                specialization != "Молоты" &&
-                specialization != "Копья" &&
-                specialization != "Кинжалы")
-            {
-                MessageBox.Show("Введите правильную специализацию.", "Ошибка");
-                return;
-            }
-
-            var result = _armory.FindBlacksmiths(specialization, skill);
-
-            gridBlacksmiths.DataSource = null;
-            gridBlacksmiths.DataSource = result;
-
-            MessageBox.Show($"Найдено кузнецов: {result.Count}", "Результат поиска");
+            FindBlacksmithsRequested?.Invoke(spec, skill);
         }
 
         private void btnPrice_Click_1(object sender, EventArgs e)
         {
-            if (gridBlacksmiths.CurrentRow != null &&
-          gridBlacksmiths.CurrentRow.DataBoundItem is Blacksmith selected)
-            {
-                decimal basePrice = numBasePrice.Value;
-
-                decimal finalPrice = _armory.CalculateForgingPrice(
-                    basePrice, selected.Id);
-
-                MessageBox.Show(
-                    $"Кузнец: {selected.Name}\n" +
-                    $"Наценка: x{selected.PriceMultiplier}\n" +
-                    $"Итоговая стоимость: {finalPrice} золота",
-                    "Расчёт стоимости");
-            }
-            else
-            {
-                MessageBox.Show("Выберите кузнеца из таблицы!", "Внимание");
-            }
+            if (gridBlacksmiths.CurrentRow?.DataBoundItem is BlacksmithDto selected)
+                CalculateForgingPriceRequested?.Invoke(selected.Id, numBasePrice.Value);
+            else MessageBox.Show("Выберите кузнеца.", "Внимание");
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            if (!int.TryParse(txtBlacksmithId.Text, out int id))
-            {
-                MessageBox.Show("Введите корректный ID!");
-                return;
-            }
-
-            var blacksmith = _armory.GetBlacksmithById(id);
-
-            if (blacksmith == null)
-            {
-                MessageBox.Show("Кузнец не найден!");
-                return;
-            }
-
-            gridBlacksmiths.DataSource = null;
-            gridBlacksmiths.DataSource =
-                new System.Collections.Generic.List<Blacksmith> { blacksmith };
+            if (int.TryParse(txtBlacksmithId.Text, out int id))
+                GetBlacksmithByIdRequested?.Invoke(id);
+            else MessageBox.Show("Некорректный ID");
         }
 
-        private void btnRefresh_Click_1(object sender, EventArgs e)
+        private void btnExit_Click_1(object sender, EventArgs e) => Close();
+
+        // --- Presenter -> UI ---
+        public void ShowBlacksmiths(IEnumerable<BlacksmithDto> blacksmiths)
         {
-            RefreshGrid();
+            gridBlacksmiths.DataSource = null;
+            gridBlacksmiths.DataSource = new List<BlacksmithDto>(blacksmiths);
+        }
+
+        public void ShowForgingPrice(string name, decimal multiplier, decimal finalPrice)
+            => MessageBox.Show($"Кузнец: {name}\nНаценка: x{multiplier}\nИтог: {finalPrice} зол.",
+                               "Расчёт стоимости");
+        public void ShowError(string message)
+        {
+            MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        public void ShowMessage(string message)
+            => MessageBox.Show(message, "Информация");
+
+        public void OpenBlacksmithDialog(BlacksmithDto initial, Action<BlacksmithDto> onResult)
+        {
+            var domain = initial == null ? null : new WeaponShopModel.Blacksmith
+            {
+                Id = initial.Id,
+                Name = initial.Name,
+                Specialization = initial.Specialization,
+                SkillLevel = initial.SkillLevel,
+                PriceMultiplier = initial.PriceMultiplier
+            };
+            using (var dlg = new BlacksmithEditForm(domain))
+            {
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    var b = dlg.BlacksmithData;
+                    onResult?.Invoke(new BlacksmithDto
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                        Specialization = b.Specialization,
+                        SkillLevel = b.SkillLevel,
+                        PriceMultiplier = b.PriceMultiplier
+                    });
+                }
+            }
         }
     }
 }

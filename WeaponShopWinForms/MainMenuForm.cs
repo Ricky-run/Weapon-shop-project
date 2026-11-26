@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,40 +10,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeaponShopModel;
-using BusinessLogic;
 
 namespace WeaponShopWinForms
 {
-    public partial class MainMenuForm : Form
+    public partial class MainMenuForm : Form, IMainMenuView
     {
-        private readonly ILogic _armory;
+        public event Action OpenWeaponsRequested;
+        public event Action OpenBlacksmithsRequested;
 
-        public MainMenuForm(ILogic armory)
-        {
-            InitializeComponent();
-            _armory = armory;
-        }
-   
+        public MainMenuForm() => InitializeComponent();
+
         private void btnWeapons_Click(object sender, EventArgs e)
-        {
-            using (var form = new Form1(_armory))
-            {
-                form.ShowDialog();
-            }
-        }
+            => OpenWeaponsRequested?.Invoke();
 
         private void btnBlacksmiths_Click_1(object sender, EventArgs e)
-        {
-            using (var form = new BlacksmithForm(_armory))
-            {
-                form.ShowDialog();
-            }
-        }
+            => OpenBlacksmithsRequested?.Invoke();
 
         private void btnExit_Click_1(object sender, EventArgs e)
+            => Close();
+        public void ShowMessage(string message)
         {
-            this.Close();
+            MessageBox.Show(message, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public void ShowError(string message)
+        {
+            MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
-    
+
 }

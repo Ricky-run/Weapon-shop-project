@@ -80,6 +80,18 @@
       <Project>{dfa5d7e6-44d1-4eae-8679-998cdbb4a7ce}</Project>
       <Name>BusinessLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
+      <Project>{4f5a7437-4475-47ce-8b72-3f10aeb64156}</Project>
+      <Name>DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Presenter\Presenter.csproj">
+      <Project>{2711848b-7cdc-48a6-9332-7b20c27e3a7d}</Project>
+      <Name>Presenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{cb8f9108-d822-4f5b-8c2c-5261b2360f44}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WeaponShopCore\WeaponShopModel.csproj">
       <Project>{2effaa5d-976b-4a13-8e5d-6c7b19aa0ea8}</Project>
       <Name>WeaponShopModel</Name>

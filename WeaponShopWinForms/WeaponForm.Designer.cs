@@ -1,6 +1,6 @@
 ﻿namespace WeaponShopWinForms
 {
-    partial class Form1
+    partial class WeaponForm
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -169,7 +169,7 @@
             this.Controls.Add(this.grid);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load_1);
+           
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UserS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UserG)).EndInit();
